@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entity/user.entity';
 import { UserService } from './service/user.service';
+import { UserController } from './user/user.controller';
 
 @Module({
   imports: [
@@ -15,11 +16,11 @@ import { UserService } from './service/user.service';
       password: process.env.DB_PASS || '',
       database: process.env.DB_NAME || 'fastlane',
       entities: [User],
-      synchronize: true,
+      synchronize: process.env.NODE_ENV === 'development', // change to true if needed
     }),
     TypeOrmModule.forFeature([User]),
   ],
-  controllers: [AppController],
+  controllers: [AppController, UserController],
   providers: [AppService, UserService],
 })
 export class AppModule {}
