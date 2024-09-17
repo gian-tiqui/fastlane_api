@@ -1,3 +1,15 @@
+<pre>
+PORT=
+DB_HOST=
+DB_PORT=
+DB_USER=
+DB_PASS=
+DB_NAME=
+NODE_ENV=
+ACCESS_TOKEN_SECRET=
+REFRESH_TOKEN_SECRET=
+</pre>
+
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
 </p>
