@@ -1,24 +1,32 @@
 import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
-import { User } from 'src/entity/user.entity';
-import { UserService } from 'src/service/user.service';
+import { User } from 'src/user/user.entity';
+import { UserService } from 'src/user/user.service';
 
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
-  findAll() {
-    return this.userService.findAll();
+  async findAll() {
+    const data = await this.userService.findAll();
+
+    const responseBody = {
+      message: `ok`,
+      status: 200,
+      data,
+    };
+
+    return responseBody;
   }
 
   @Get(`:id`)
-  findOne(@Param('id') id: number) {
+  async findOne(@Param('id') id: number) {
     return this.userService.findOne(Number(id));
   }
 
   @Post()
-  create(@Body() user: User) {
-    this.userService.create(user);
+  async create(@Body() user: User) {
+    return await this.userService.create(user);
   }
 
   @Delete(`:id`)
