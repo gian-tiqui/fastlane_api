@@ -4,9 +4,9 @@ import {
   Delete,
   Get,
   InternalServerErrorException,
-  NotFoundException,
   Param,
   Post,
+  Put,
 } from '@nestjs/common';
 import { User } from './entity/user.entity';
 import { UserService } from './user.service';
@@ -21,7 +21,7 @@ export class UserController {
 
     const responseBody = {
       message: `ok`,
-      status: 200,
+      statusCode: 200,
       data,
     };
 
@@ -33,7 +33,12 @@ export class UserController {
     try {
       const user = await this.userService.findOne(Number(id));
 
-      if (!user) throw new NotFoundException(`User with ${id} not found`);
+      if (!user) {
+        return {
+          message: 'User not found',
+          statusCode: 404,
+        };
+      }
 
       return user;
     } catch (error: unknown) {
@@ -50,14 +55,20 @@ export class UserController {
       const users = await this.userService.findAll();
 
       if (users.some((u) => u.email === user.email)) {
-        throw new InternalServerErrorException(
-          'Email already exists in the system',
-        );
+        return {
+          message: 'Email already exists',
+          statusCode: 409,
+        };
       }
     } catch (error: unknown) {
       console.error(error);
     }
     return await this.userService.create(user);
+  }
+
+  @Put(':id')
+  update(@Param('id') id: number, @Body() user: User) {
+    return this.userService.update(Number(id), user);
   }
 
   @Delete(`:id`)

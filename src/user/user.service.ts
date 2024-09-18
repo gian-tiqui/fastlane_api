@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entity/user.entity';
@@ -22,8 +22,17 @@ export class UserService {
     return this.userRepo.save(user);
   }
 
-  update(user: User): Promise<User> {
-    return this.userRepo.save(user);
+  async update(id: number, user: User): Promise<User> {
+    const updatedUser = await this.userRepo.preload({
+      id: id,
+      ...user,
+    });
+
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+
+    return this.userRepo.save(updatedUser);
   }
 
   delete(id: number): string {
