@@ -38,7 +38,11 @@ describe('UserController', () => {
       const result: User[] = [
         {
           id: 1,
-          name: 'User 1',
+          firstname: 'User 1',
+          middlename: 'User 1',
+          lastname: 'User 1',
+          sex: 'male',
+          dob: new Date(),
           email: 'meow',
           password: 'ajsndnjdska',
           role: 'admin',
@@ -61,7 +65,11 @@ describe('UserController', () => {
     it('should return a single user by id', async () => {
       const result = {
         id: 1,
-        name: 'User 1',
+        firstname: 'User 1',
+        middlename: 'User 1',
+        lastname: 'User 1',
+        sex: 'male',
+        dob: new Date(),
         email: 'meow',
         password: 'ajsndnjdska',
         role: 'admin',
@@ -79,7 +87,11 @@ describe('UserController', () => {
     it('should create a user', async () => {
       const userDto: User = {
         id: 1,
-        name: 'User 1',
+        firstname: 'User 1',
+        middlename: 'User 1',
+        lastname: 'User 1',
+        sex: 'male',
+        dob: new Date(),
         email: 'meow',
         password: 'ajsndnjdska',
         role: 'admin',
