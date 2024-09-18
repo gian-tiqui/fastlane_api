@@ -6,7 +6,13 @@ export class User {
   id: number;
 
   @Column()
-  name: string;
+  firstname: string;
+
+  @Column()
+  middlename: string;
+
+  @Column()
+  lastname: string;
 
   @Column()
   email: string;
@@ -16,4 +22,10 @@ export class User {
 
   @Column()
   role: string;
+
+  @Column()
+  dob: Date;
+
+  @Column()
+  sex: string;
 }

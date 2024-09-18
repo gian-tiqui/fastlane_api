@@ -14,7 +14,7 @@ import { AuthModule } from './auth/auth.module';
       password: process.env.DB_PASS || '',
       database: process.env.DB_NAME || 'fastlane',
       entities: [User],
-      synchronize: process.env.NODE_ENV === 'development', // change to true if needed
+      synchronize: process.env.NODE_ENV == 'development', // change to true if needed
     }),
     TypeOrmModule.forFeature([User]),
     UserModule,
