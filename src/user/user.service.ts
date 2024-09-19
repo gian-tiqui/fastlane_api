@@ -42,9 +42,13 @@ export class UserService {
     return this.userRepo.save(updatedUser);
   }
 
-  delete(id: number): string {
-    this.userRepo.delete(id);
+  async delete(id: number) {
+    const result = await this.userRepo.delete(id);
 
-    return 'user deleted';
+    if (result.affected === 0) {
+      return 'user not found';
+    }
+
+    return 'user deleted successfully';
   }
 }

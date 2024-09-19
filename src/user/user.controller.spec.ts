@@ -105,7 +105,7 @@ describe('UserController', () => {
         lastname: 'User 1',
         sex: 'male',
         dob: new Date(),
-        email: 'meow100@gmail.com',
+        email: 'meow24234@gmail.com',
         password: 'ajsndnjdska',
         role: 'admin',
       };
@@ -113,23 +113,14 @@ describe('UserController', () => {
       const userDto = {
         message: 'User registration successful',
         statusCode: 201,
-        data: {
-          id: 1,
-          firstname: 'User 1',
-          middlename: 'User 1',
-          lastname: 'User 1',
-          sex: 'male',
-          dob: new Date(),
-          email: 'meow24234@gmail.com',
-          password: 'ajsndnjdska',
-          role: 'admin',
-        },
+        data: user,
       };
+
       jest.spyOn(userService, 'create').mockResolvedValue(user);
 
       const response = await authController.register(user);
 
-      expect(response).toBe(userDto);
+      expect(response).toEqual(userDto);
       expect(userService.create).toHaveBeenCalledWith(userDto);
     });
   });
