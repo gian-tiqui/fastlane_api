@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
 import { User } from './entity/user.entity';
+import { AuthController } from '../auth/auth.controller';
 
 describe('UserController', () => {
   let controller: UserController;
@@ -98,7 +99,9 @@ describe('UserController', () => {
       };
       jest.spyOn(userService, 'create').mockResolvedValue(userDto);
 
-      const response = await controller.create(userDto);
+      const authController = new AuthController(null, null);
+
+      const response = await authController.register(userDto);
 
       expect(response).toBe(userDto);
       expect(userService.create).toHaveBeenCalledWith(userDto);

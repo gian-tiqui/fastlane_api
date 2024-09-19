@@ -15,7 +15,7 @@ export class AuthController {
   }
 
   @Post('register')
-  async create(@Body() user: User) {
+  async register(@Body() user: User) {
     try {
       const users = await this.userService.findAll();
 
