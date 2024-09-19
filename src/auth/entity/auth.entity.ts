@@ -1,5 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
-import { User } from '../../user/entity/user.entity';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class RefreshToken {
@@ -8,9 +7,6 @@ export class RefreshToken {
 
   @Column({ length: 500 })
   token: string;
-
-  @ManyToOne(() => User, (user) => user.refreshTokens, { onDelete: 'CASCADE' })
-  user: User;
 
   @Column()
   expiresAt: Date;

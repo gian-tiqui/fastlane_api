@@ -5,7 +5,6 @@ import {
   Get,
   InternalServerErrorException,
   Param,
-  Post,
   Put,
 } from '@nestjs/common';
 import { User } from './entity/user.entity';
@@ -47,23 +46,6 @@ export class UserController {
         'Error occured while fetching the user',
       );
     }
-  }
-
-  @Post()
-  async create(@Body() user: User) {
-    try {
-      const users = await this.userService.findAll();
-
-      if (users.some((u) => u.email === user.email)) {
-        return {
-          message: 'Email already exists',
-          statusCode: 409,
-        };
-      }
-    } catch (error: unknown) {
-      console.error(error);
-    }
-    return await this.userService.create(user);
   }
 
   @Put(':id')
