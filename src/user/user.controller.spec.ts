@@ -1,12 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserController } from './user.controller';
-import { UserService } from './user.service';
-import { User } from './entity/user.entity';
+import { UserService } from '../user/user.service';
+import { User } from '../user/entity/user.entity';
 import { AuthController } from '../auth/auth.controller';
+import { AuthService } from '../auth/auth.service';
 
 describe('UserController', () => {
   let controller: UserController;
   let userService: UserService;
+  let authController: AuthController;
 
   const mockUserService = {
     findAll: jest.fn(),
@@ -15,18 +17,28 @@ describe('UserController', () => {
     delete: jest.fn(),
   };
 
+  const mockAuthService = {
+    login: jest.fn(),
+    register: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [UserController],
+      controllers: [UserController, AuthController],
       providers: [
         {
           provide: UserService,
           useValue: mockUserService,
         },
+        {
+          provide: AuthService,
+          useValue: mockAuthService,
+        },
       ],
     }).compile();
 
     controller = module.get<UserController>(UserController);
+    authController = module.get<AuthController>(AuthController);
     userService = module.get<UserService>(UserService);
   });
 
@@ -49,7 +61,7 @@ describe('UserController', () => {
           role: 'admin',
         },
       ];
-      jest.spyOn(userService, 'findAll').mockResolvedValue(result); // Mock the service method
+      jest.spyOn(userService, 'findAll').mockResolvedValue(result);
 
       const response = await controller.findAll();
 
@@ -58,7 +70,7 @@ describe('UserController', () => {
         statusCode: 200,
         data: result,
       });
-      expect(userService.findAll).toHaveBeenCalled(); // Ensure the service method was called
+      expect(userService.findAll).toHaveBeenCalled();
     });
   });
 
@@ -86,22 +98,36 @@ describe('UserController', () => {
 
   describe('create', () => {
     it('should create a user', async () => {
-      const userDto: User = {
+      const user: User = {
         id: 1,
         firstname: 'User 1',
         middlename: 'User 1',
         lastname: 'User 1',
         sex: 'male',
         dob: new Date(),
-        email: 'meow24234@gmail.com',
+        email: 'meow100@gmail.com',
         password: 'ajsndnjdska',
         role: 'admin',
       };
-      jest.spyOn(userService, 'create').mockResolvedValue(userDto);
 
-      const authController = new AuthController(null, null);
+      const userDto = {
+        message: 'User registration successful',
+        statusCode: 201,
+        data: {
+          id: 1,
+          firstname: 'User 1',
+          middlename: 'User 1',
+          lastname: 'User 1',
+          sex: 'male',
+          dob: new Date(),
+          email: 'meow24234@gmail.com',
+          password: 'ajsndnjdska',
+          role: 'admin',
+        },
+      };
+      jest.spyOn(userService, 'create').mockResolvedValue(user);
 
-      const response = await authController.register(userDto);
+      const response = await authController.register(user);
 
       expect(response).toBe(userDto);
       expect(userService.create).toHaveBeenCalledWith(userDto);
