@@ -1,9 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/user/entity/user.entity';
-import { UserModule } from './user/user.module';
+
 import { AuthModule } from './auth/auth.module';
-import { RefreshToken } from './auth/entity/auth.entity';
 
 @Module({
   imports: [
@@ -17,9 +16,7 @@ import { RefreshToken } from './auth/entity/auth.entity';
       entities: [User],
       synchronize: true, // change to true if needed
     }),
-    TypeOrmModule.forFeature([User]),
-    TypeOrmModule.forFeature([RefreshToken]),
-    UserModule,
+
     AuthModule,
   ],
 })
