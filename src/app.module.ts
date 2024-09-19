@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/user/entity/user.entity';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
+import { RefreshToken } from './auth/entity/auth.entity';
 
 @Module({
   imports: [
@@ -14,9 +15,10 @@ import { AuthModule } from './auth/auth.module';
       password: process.env.DB_PASS || '',
       database: process.env.DB_NAME || 'fastlane',
       entities: [User],
-      synchronize: process.env.NODE_ENV == 'development', // change to true if needed
+      synchronize: true, // change to true if needed
     }),
     TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([RefreshToken]),
     UserModule,
     AuthModule,
   ],

@@ -54,7 +54,7 @@ describe('UserController', () => {
 
       expect(response).toEqual({
         message: 'ok',
-        status: 200,
+        statusCode: 200,
         data: result,
       });
       expect(userService.findAll).toHaveBeenCalled(); // Ensure the service method was called
@@ -70,7 +70,7 @@ describe('UserController', () => {
         lastname: 'User 1',
         sex: 'male',
         dob: new Date(),
-        email: 'meow',
+        email: 'meow100@gmail.com',
         password: 'ajsndnjdska',
         role: 'admin',
       };
@@ -92,7 +92,7 @@ describe('UserController', () => {
         lastname: 'User 1',
         sex: 'male',
         dob: new Date(),
-        email: 'meow',
+        email: 'meow24234@gmail.com',
         password: 'ajsndnjdska',
         role: 'admin',
       };
