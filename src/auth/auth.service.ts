@@ -1,16 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { User } from '../user/entity/user.entity';
-import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import * as jwt from 'jsonwebtoken';
 import { ConfigService } from '@nestjs/config';
+import * as bcrypt from 'bcrypt';
+import * as jwt from 'jsonwebtoken';
+import { RefreshToken } from './entity/refresh_token.entity';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(User)
     private userRepo: Repository<User>,
+    @InjectRepository(RefreshToken)
+    private refreshTokenRepo: Repository<RefreshToken>,
     private readonly configService: ConfigService,
   ) {}
 
@@ -33,9 +36,27 @@ export class AuthService {
       const refreshToken = jwt.sign(payload, rtSecret, {
         expiresIn: rtExp,
       });
+
+      const existingToken = await this.refreshTokenRepo.findOne({
+        where: { token: refreshToken },
+      });
+
+      if (existingToken) {
+        return {
+          message: 'Token already exists',
+          statusCode: 409,
+        };
+      } else {
+        await this.refreshTokenRepo.save({
+          token: refreshToken,
+          userId: userId,
+          expiresAt: '2001-3-5',
+        });
+      }
+
       return { accessToken, refreshToken };
     } catch (error) {
-      console.error('Error generating JWT:', error);
+      console.error(error);
       throw error;
     }
   }
@@ -48,7 +69,13 @@ export class AuthService {
       ...user,
       password: hashedPassword,
     });
+  }
 
-    return null;
+  async logout() {
+    return 'logged out successful';
+  }
+
+  async refresh() {
+    return { accessToken: 'meow' };
   }
 }

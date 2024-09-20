@@ -1,17 +1,17 @@
 import { ConfigService } from '@nestjs/config';
 import { User } from 'src/user/entity/user.entity';
 
-let configService: ConfigService;
+let configModule: ConfigService;
 
 const database = {
   type: 'mysql',
-  host: configService.get<string>('DB_HOST'),
-  port: configService.get<number>('DB_PORT'),
-  username: configService.get<string>('DB_USER'),
-  password: configService.get<string>('DB_PASS'),
-  database: configService.get<string>('DB_NAME'),
+  host: configModule.get<string>('DB_HOST') || 'localhost',
+  port: Number(process.env.DB_PORT) || 3306,
+  username: process.env.DB_USER || 'root',
+  password: process.env.DB_PASS || '',
+  database: process.env.DB_NAME || 'fastlane',
   entities: [User],
-  synchronize: configService.get<string>('NODE_ENV') == 'development', // change to true if needed
+  synchronize: true, // change to true if needed
 };
 
 export default database;
