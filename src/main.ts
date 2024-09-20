@@ -12,6 +12,7 @@ async function bootstrap() {
     origin: 'http://localhost:5173/login',
     credentials: process.env.NODE_ENV === 'production',
   });
+
   await app.listen(PORT);
 }
 bootstrap();
