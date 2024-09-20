@@ -26,6 +26,8 @@ import { UserController } from './user/user.controller';
     AuthModule,
   ],
 })
+
+// Testing for middleware, can  be removed later
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(LoggerMiddleware).forRoutes(UserController);
