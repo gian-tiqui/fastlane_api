@@ -2,6 +2,9 @@ import { Body, Controller, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { User } from '../user/entity/user.entity';
 import { UserService } from '../user/user.service';
+import { LoginDto } from './entity/login.dto';
+import * as bcrypt from 'bcrypt';
+
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -10,8 +13,29 @@ export class AuthController {
   ) {}
 
   @Post('login')
-  async login() {
-    return this.authService.login();
+  async login(@Body() loginDto: LoginDto) {
+    try {
+      const users = await this.userService.findAll();
+
+      const user = users.find((u) => u.email === loginDto.email);
+      if (!user) {
+        return { message: 'User not found', statusCode: 404 };
+      }
+
+      const passwordMatch = await bcrypt.compare(
+        loginDto.password,
+        user.password,
+      );
+
+      if (passwordMatch) {
+        return this.authService.login(user.id, user.email, [user.role]);
+      } else {
+        return { message: 'Invalid password', statusCode: 401 };
+      }
+    } catch (error) {
+      console.error(error);
+      return { message: 'User not found', statusCode: 404 };
+    }
   }
 
   @Post('register')

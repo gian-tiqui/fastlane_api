@@ -9,5 +9,8 @@ export class RefreshToken {
   token: string;
 
   @Column()
+  userId: number;
+
+  @Column()
   expiresAt: Date;
 }
