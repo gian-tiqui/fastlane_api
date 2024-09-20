@@ -82,23 +82,31 @@ export class AuthService {
   }
 
   async logout(refreshToken: string) {
-    const existingToken = await this.refreshTokenRepo.findOne({
-      where: { token: refreshToken },
-    });
+    try {
+      const existingToken = await this.refreshTokenRepo.findOne({
+        where: { token: refreshToken },
+      });
 
-    if (!existingToken) {
+      if (!existingToken) {
+        return {
+          message: 'Token not found',
+          statusCode: 404,
+        };
+      }
+
+      await this.refreshTokenRepo.delete(existingToken.id);
+
       return {
-        message: 'Token not found',
-        statusCode: 404,
+        message: 'User logged out successfully',
+        statusCode: 200,
+      };
+    } catch (error) {
+      console.error(error);
+      return {
+        message: 'Error occurred while logging out',
+        statusCode: 500,
       };
     }
-
-    await this.refreshTokenRepo.delete(existingToken.id);
-
-    return {
-      message: 'User logged out successfully',
-      statusCode: 200,
-    };
   }
 
   async refresh() {
