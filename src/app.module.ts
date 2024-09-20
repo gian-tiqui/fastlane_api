@@ -1,10 +1,12 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/user/entity/user.entity';
 
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { RefreshToken } from './auth/entity/refresh_token.entity';
+import { LoggerMiddleware } from './common/middleware/logger.middleware';
+import { UserController } from './user/user.controller';
 
 @Module({
   imports: [
@@ -24,4 +26,8 @@ import { RefreshToken } from './auth/entity/refresh_token.entity';
     AuthModule,
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes(UserController);
+  }
+}
