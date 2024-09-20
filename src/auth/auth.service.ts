@@ -17,9 +17,13 @@ export class AuthService {
     private readonly configService: ConfigService,
   ) {}
 
-  async login(userId: number, userEmail: string, userRoles: string[]) {
+  /*
+   * @TODO: Login should return the existing refresh token when the user id is found in the database.
+   */
+
+  async login(_userId: number, userEmail: string, userRoles: string[]) {
     const payload = {
-      id: userId,
+      id: _userId,
       email: userEmail,
       roles: userRoles,
     };
@@ -37,19 +41,19 @@ export class AuthService {
         expiresIn: rtExp,
       });
 
-      const existingToken = await this.refreshTokenRepo.findOne({
-        where: { token: refreshToken },
+      const existingToken = await this.refreshTokenRepo.findBy({
+        userId: _userId,
       });
 
       if (existingToken) {
         return {
-          message: 'Token already exists',
-          statusCode: 409,
+          accessToken,
+          refreshToken: '',
         };
       } else {
         await this.refreshTokenRepo.save({
           token: refreshToken,
-          userId: userId,
+          userId: _userId,
           expiresAt: '2001-3-5',
         });
       }
@@ -71,7 +75,20 @@ export class AuthService {
     });
   }
 
-  async logout() {
+  async logout(refreshToken: string) {
+    const existingToken = await this.refreshTokenRepo.findOne({
+      where: { token: refreshToken },
+    });
+
+    if (!existingToken) {
+      return {
+        message: 'Token not found',
+        statusCode: 404,
+      };
+    }
+
+    await this.refreshTokenRepo.delete(existingToken.id);
+
     return 'logged out successful';
   }
 
