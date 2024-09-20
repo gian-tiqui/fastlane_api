@@ -15,18 +15,23 @@ export class AuthController {
   @Post('login')
   async login(@Body() loginDto: LoginDto) {
     try {
+      // Fetch all users that will be needed for finding.
       const users = await this.userService.findAll();
 
       const user = users.find((u) => u.email === loginDto.email);
+
+      // If user does not exist, return a 404 message
       if (!user) {
         return { message: 'User not found', statusCode: 404 };
       }
 
+      // Compare passwords through their hashes.
       const passwordMatch = await bcrypt.compare(
         loginDto.password,
         user.password,
       );
 
+      // If password matches, authentication will proceed.
       if (passwordMatch) {
         return this.authService.login(user.id, user.email, [user.role]);
       } else {
@@ -43,6 +48,7 @@ export class AuthController {
     try {
       const users = await this.userService.findAll();
 
+      // Check if email already exists. If it does, return a 409 message.  If it doesn't, proceed with registration.
       if (users.some((u) => u.email === user.email)) {
         return {
           message: 'Email already exists',
@@ -60,5 +66,10 @@ export class AuthController {
       statusCode: 201,
       data: registeredUser,
     };
+  }
+
+  @Post('logout')
+  async logout(@Body() body: { refreshToken: string }) {
+    this.authService.logout(body.refreshToken);
   }
 }

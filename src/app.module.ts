@@ -9,7 +9,7 @@ import { RefreshToken } from './auth/entity/refresh_token.entity';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      isGlobal: true,
+      isGlobal: true, // Let ENV file be accessible globally.
     }),
     TypeOrmModule.forRoot({
       type: 'mysql',

@@ -17,23 +17,22 @@ export class AuthService {
     private readonly configService: ConfigService,
   ) {}
 
-  /*
-   * @TODO: Login should return the existing refresh token when the user id is found in the database.
-   */
-
   async login(_userId: number, userEmail: string, userRoles: string[]) {
+    // Payload that will be sent to the shets
     const payload = {
       id: _userId,
       email: userEmail,
       roles: userRoles,
     };
 
+    // Get secrets and expirations from the ENV variables.
     const atSecret = this.configService.get<string>('AT_SECRET');
     const rtSecret = this.configService.get<string>('RT_SECRET');
     const atExp = this.configService.get<string>('AT_EXP');
     const rtExp = this.configService.get<string>('RT_EXP');
 
     try {
+      // Generate Access Token and Refresh Token
       const accessToken = jwt.sign(payload, atSecret, {
         expiresIn: atExp,
       });
@@ -41,10 +40,12 @@ export class AuthService {
         expiresIn: rtExp,
       });
 
+      // Check if refresh token exists in the database, if not, create a new one.
       const existingToken = await this.refreshTokenRepo.find({
         where: { userId: _userId },
       });
 
+      // If token exists in the database, return the same token unless its expired.
       if (existingToken.length > 0) {
         return {
           message: 'Access Token generated',
@@ -70,6 +71,7 @@ export class AuthService {
   }
 
   async register(user: User): Promise<User> {
+    // Get the salt from the ENV variables
     const salt = Number(this.configService.get<number>('SALT'));
     const hashedPassword = await bcrypt.hash(user.password, salt);
 
@@ -93,7 +95,10 @@ export class AuthService {
 
     await this.refreshTokenRepo.delete(existingToken.id);
 
-    return 'logged out successful';
+    return {
+      message: 'User logged out successfully',
+      statusCode: 200,
+    };
   }
 
   async refresh() {
