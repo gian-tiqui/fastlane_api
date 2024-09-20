@@ -41,14 +41,14 @@ export class AuthService {
         expiresIn: rtExp,
       });
 
-      const existingToken = await this.refreshTokenRepo.findBy({
-        userId: _userId,
+      const existingToken = await this.refreshTokenRepo.find({
+        where: { userId: _userId },
       });
 
-      if (existingToken) {
+      if (existingToken.length > 0) {
         return {
-          accessToken,
-          refreshToken: '',
+          message: 'Access Token generated',
+          tokens: { accessToken, refreshToken: existingToken[0].token },
         };
       } else {
         await this.refreshTokenRepo.save({
@@ -58,7 +58,11 @@ export class AuthService {
         });
       }
 
-      return { accessToken, refreshToken };
+      return {
+        message: 'Tokens generated',
+        statusCode: '200',
+        tokens: { accessToken, refreshToken },
+      };
     } catch (error) {
       console.error(error);
       throw error;
