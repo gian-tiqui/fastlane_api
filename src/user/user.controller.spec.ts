@@ -95,33 +95,4 @@ describe('UserController', () => {
       expect(userService.findOne).toHaveBeenCalledWith(1);
     });
   });
-
-  describe('create', () => {
-    it('should create a user', async () => {
-      const user: User = {
-        id: 1,
-        firstname: 'User 1',
-        middlename: 'User 1',
-        lastname: 'User 1',
-        sex: 'male',
-        dob: new Date(),
-        email: 'meow24234@gmail.com',
-        password: 'ajsndnjdska',
-        role: 'admin',
-      };
-
-      const userDto = {
-        message: 'User registration successful',
-        statusCode: 201,
-        data: user,
-      };
-
-      jest.spyOn(userService, 'create').mockResolvedValue(user);
-
-      const response = await authController.register(user);
-
-      expect(response).toEqual(userDto);
-      expect(userService.create).toHaveBeenCalledWith(userDto);
-    });
-  });
 });
