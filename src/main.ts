@@ -3,6 +3,10 @@ import { AppModule } from './app.module';
 
 /*
  * App initializer.
+ * @TODO:
+ *
+ * Change: Typeorm to Prisma
+ * Download: argon for hashing passwords, zod for input validation
  */
 
 async function bootstrap() {
